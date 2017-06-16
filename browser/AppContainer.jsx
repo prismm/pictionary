@@ -7,7 +7,7 @@ export default class AppContainer extends React.Component {
         return (
             <div className="AppContainer">
                 <Header />
-                <Room />
+                <Room yourTurn={false} />
             </div>
         )
     }

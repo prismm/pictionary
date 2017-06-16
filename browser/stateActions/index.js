@@ -24,6 +24,9 @@ export default function rootReducer(state = initialState, action) {
         case 'CLEAR_STROKES':
             newState.strokes = {};
             break;
+        case 'NEW_TURN':
+            newState.turn++;
+            break;
         default:
             break;
     }

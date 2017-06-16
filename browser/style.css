@@ -10,8 +10,9 @@ body {
     left: 0;
     width: 700px;
     height: 450px;
-    border: 2px solid black;
+    border: 3px solid black;
     float: left;
+    margin-bottom: 10px
 }
 
 #color-selector {
@@ -19,10 +20,11 @@ body {
     width: 80px;
     height: 160px;
     background: white;
-    float: right;
+    float: left;
+    clear: both;
     padding: 2px;
     border: 3px solid black;
-    margin-right: 30px;
+    /*display: inline;*/
 }
 
 #header {
@@ -39,4 +41,79 @@ body {
 
 .marker.selected {
     border: 2px solid white;
+}
+
+.timer {
+    float: left;
+    border: 3px solid black;
+    padding: 10px;
+    clear: both;
+    font-style: bold;
+}
+
+
+/*button {
+    height: 6px;
+    width: 24px;
+    border-radius: 6px;
+    border: 1px;
+    box-shadow: 1px inset;
+}*/
+
+.pure-button {
+    font-family: inherit;
+    font-size: 100%;
+    font-style: bold;
+    padding: 0.5em 1em;
+    width: 150px;
+    color: #444;
+    /* rgba not supported (IE 8) */
+    color: rgba(0, 0, 0, 0.80);
+    /* rgba supported */
+    border: 3px solid black;
+    /*IE 6/7/8*/
+    /*IE9 + everything else*/
+    background-color: greenyellow;
+    border-radius: 2px;
+    margin: 0 10px;
+}
+
+.pure-button-hover,
+.pure-button:hover,
+.pure-button:focus {
+    /* csslint ignore:start */
+    filter: alpha(opacity=90);
+    /* csslint ignore:end */
+    background-image: -webkit-linear-gradient(transparent, rgba(0, 0, 0, 0.05) 40%, rgba(0, 0, 0, 0.10));
+    background-image: linear-gradient(transparent, rgba(0, 0, 0, 0.05) 40%, rgba(0, 0, 0, 0.10));
+}
+
+.pure-button:focus {
+    outline: 0;
+}
+
+.pure-button-active,
+.pure-button:active {
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.15) inset, 0 0 6px rgba(0, 0, 0, 0.20) inset;
+    border-color: #000\9;
+}
+
+.pure-button[disabled],
+.pure-button-disabled,
+.pure-button-disabled:hover,
+.pure-button-disabled:focus,
+.pure-button-disabled:active {
+    border: none;
+    background-image: none;
+    /* csslint ignore:start */
+    filter: alpha(opacity=40);
+    /* csslint ignore:end */
+    opacity: 0.40;
+    cursor: not-allowed;
+    box-shadow: none;
+    pointer-events: none;
+}
+
+.pure-button-hidden {
+    display: none;
 }

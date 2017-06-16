@@ -1,0 +1,18 @@
+ turns: 
+    next button: switch turns between players
+    next button: enable start button for yourTurn: true only
+    next button: render colorselector and card for yourTurn: true only
+    start button: reset whiteboard and guessboard and start countdown
+    
+guessboard:
+    use socket to stream all guesses from guessform onto guessboard
+    parse guesses to see if they match card
+
+card: 
+    start button: display new word
+
+timer: 
+    start button: countdown 60 seconds
+
+room:
+    when state.timeRemaining = 0, disable guessform
