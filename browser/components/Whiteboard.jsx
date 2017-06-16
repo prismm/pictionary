@@ -1,5 +1,5 @@
 import React from 'react';
-import runSocket from '../socket/app'
+import { runSocket } from '../socket/app'
 
 export default class Whiteboard extends React.Component{
     componentDidMount(){

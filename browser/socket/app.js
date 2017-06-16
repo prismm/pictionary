@@ -2,7 +2,7 @@ var socket = io(window.location.origin);
 // const buildWhiteboard = require('./whiteboard')
 import buildWhiteboard from './whiteboard';
 
-export default function runSocket(canvasElement) {
+export function runSocket(canvasElement) {
     const whiteboard = buildWhiteboard(canvasElement);
 
     socket.on('connect', function() {
@@ -18,9 +18,15 @@ export default function runSocket(canvasElement) {
     });
 
     socket.on('strokes', strokes => {
-        console.log(strokes[0]);
         strokes.forEach(stroke => {
             whiteboard.draw(stroke.start, stroke.end, stroke.strokeColor);
         });
     });
+}
+
+export function buildPlayerList() {
+    socket.on('players', playerList => {
+        console.log(playerList);
+        return playerList
+    })
 }

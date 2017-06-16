@@ -14,20 +14,49 @@ db.sync({ force: true })
             console.log('The server is listening on port 3000!');
         });
 
+        //initializing playerList as an empty array
+        let playerList = [];
+        let playerNumber = 1;
+
         const io = socketio(server);
 
         io.on('connection', socket => {
+            //adding new client to playerList
             console.log('A new client has connected');
-            console.log(socket.id);
+            playerList.push({
+                name: "Player" + playerNumber,
+                id: socket.id,
+                yourTurn: false
+            });
+            playerNumber++;
+            console.log("PLAYER LIST:", playerList);
+
+            //broadcasting playerList
+            socket.broadcast.emit('players', playerList);
+
+            //emitting all strokes from database
             Stroke.findAll()
                 .then(strokes => {
                     socket.emit('strokes', strokes);
                 });
+
+            //on disconnect, filtering playerList to remove the disconnected player 
+            //and broadcasting updated playerList
             socket.on('disconnect', () => {
                 console.log('disconnected ', socket.id);
+                playerList = playerList.filter(player => {
+                    if (player.id === socket.id) {
+                        return false
+                    } else {
+                        return true
+                    }
+                })
+                console.log("PLAYER LIST:", playerList);
+                socket.broadcast.emit('players', playerList);
             });
+
+            //creates stroke on draw and broadcasts to other players
             socket.on('draw', (start, end, strokeColor) => {
-                console.log(typeof start.x, typeof end.y, strokeColor);
                 Stroke.create({
                         startX: +start.x,
                         startY: +start.y,

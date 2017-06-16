@@ -7,7 +7,7 @@ export default class Timer extends React.Component {
 
     render(){
         return (
-            <div className="timer">Time Remaining: {this.props.timeRemaining}s</div>
+            <div className="timer"> {this.props.timeRemaining ? `TIME: ${this.props.timeRemaining} seconds` : "TIMEOUT"} </div>
         )
     }
 }

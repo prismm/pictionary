@@ -8,30 +8,42 @@ import Card from './Card';
 import YourGuess from './YourGuess';
 import Guesses from './Guesses';
 import Timer from './Timer';
+import Players from './Players';
 
 
 export default class Room extends Component {
     constructor(props){
         super(props);
         this.state = {
+            players: this.props.playerList,
             yourTurn: props.yourTurn,
             timeRemaining: 60
         }
         this.startTurn = this.startTurn.bind(this);
         this.tick = this.tick.bind(this);
+        this.nextTurn = this.nextTurn.bind(this);
+    }
+
+    componentDidMount(){
+        //get players from socket -- set event listener
+        //put players on local state
     }
 
     tick(){
         this.setState({timeRemaining: this.state.timeRemaining - 1});
         if (this.state.timeRemaining < 0) {
             clearInterval(this.interval);
-            this.setState({yourTurn: false, timeRemaining: "TIMEOUT"})
+            this.setState({yourTurn: false, timeRemaining: false})
         }
     }
 
     startTurn(){
         this.setState({yourTurn: true, timeRemaining: 60});
         this.interval = setInterval(this.tick, 1000)
+    }
+
+    nextTurn(){
+        //switch yourTurn to next player
     }
 
     componentWillUnmount(){
@@ -42,22 +54,24 @@ export default class Room extends Component {
         return (
             <div className="Room">
                 <Whiteboard />
-                <ColorSelector />
-                <button className="pure-button" onClick={this.startTurn}>START</button>
+                {this.state.yourTurn ? 
+                    (
+                        <div className="your-turn-elements">
+                            <Card />
+                            <ColorSelector />
+                            <button className="pure-button" onClick={this.startTurn}>START</button>
+                        </div>
+                    ) 
+                    : (<YourGuess />)
+                }
+                <Players players={this.state.players}/>
                 <Timer timeRemaining={this.state.timeRemaining} />
+                <Guesses />
             </div>
         )
     }
 }
 
-/*
-                <Header />
-                <p>Hello Room!</p>
-                <Whiteboard />
-                <ColorSelector />
-                {this.state.yourTurn ? (<Card />) : (<YourGuess />)}
-                <Guesses />
-                */
 
 // function mapStateToProps(state){
 //     return state;
