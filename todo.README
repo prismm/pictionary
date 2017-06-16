@@ -5,14 +5,15 @@
     start button: reset whiteboard and guessboard and start countdown
     
 guessboard:
-    use socket to stream all guesses from guessform onto guessboard
+    start button: use socket to stream all guesses from guessform onto guessboard
+    next button: resets guessboard
     parse guesses to see if they match card
 
 card: 
     start button: display new word
 
 timer: 
-    start button: countdown 60 seconds
+   X start button: countdown 60 seconds
 
-room:
+guessform:
     when state.timeRemaining = 0, disable guessform

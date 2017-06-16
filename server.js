@@ -17,22 +17,28 @@ db.sync({ force: true })
         //initializing playerList as an empty array
         let playerList = [];
         let playerNumber = 1;
-
+        let player = {}
         const io = socketio(server);
 
         io.on('connection', socket => {
             //adding new client to playerList
             console.log('A new client has connected');
-            playerList.push({
+            player = {
                 name: "Player" + playerNumber,
                 id: socket.id,
                 yourTurn: false
-            });
+            };
+            playerList.push(player);
             playerNumber++;
             console.log("PLAYER LIST:", playerList);
-
+            console.log("PLAYER:", player);
             //broadcasting playerList
-            socket.broadcast.emit('players', playerList);
+            socket.on('appContainerMounted', () => {
+                    socket.emit('players', playerList, player);
+                })
+                // socket.on('connection', () => {
+
+            // })
 
             //emitting all strokes from database
             Stroke.findAll()
@@ -44,15 +50,18 @@ db.sync({ force: true })
             //and broadcasting updated playerList
             socket.on('disconnect', () => {
                 console.log('disconnected ', socket.id);
+                let leavingPlayer = {};
                 playerList = playerList.filter(player => {
                     if (player.id === socket.id) {
+                        leavingPlayer = player;
                         return false
                     } else {
                         return true
                     }
                 })
-                console.log("PLAYER LIST:", playerList);
-                socket.broadcast.emit('players', playerList);
+                console.log("PLAYER LIST UPON DISCONNECT:", playerList);
+                console.log("PLAYER WHO LEFT", leavingPlayer)
+                socket.emit('players', playerList, player);
             });
 
             //creates stroke on draw and broadcasts to other players

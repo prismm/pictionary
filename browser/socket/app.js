@@ -25,6 +25,10 @@ export function runSocket(canvasElement) {
 }
 
 export function buildPlayerList() {
+    socket.on('connect', function() {
+        console.log('I have made a persistent two-way connection to the server!');
+    });
+
     socket.on('players', playerList => {
         console.log(playerList);
         return playerList

@@ -15,7 +15,7 @@ export default class Room extends Component {
     constructor(props){
         super(props);
         this.state = {
-            players: this.props.playerList,
+            // players: [],
             yourTurn: props.yourTurn,
             timeRemaining: 60
         }
@@ -27,6 +27,11 @@ export default class Room extends Component {
     componentDidMount(){
         //get players from socket -- set event listener
         //put players on local state
+
+    }
+
+    componentWillReceiveProps(nextProps){
+        this.setState({players: nextProps.playerList})
     }
 
     tick(){
@@ -64,7 +69,7 @@ export default class Room extends Component {
                     ) 
                     : (<YourGuess />)
                 }
-                <Players players={this.state.players}/>
+                <Players />
                 <Timer timeRemaining={this.state.timeRemaining} />
                 <Guesses />
             </div>
