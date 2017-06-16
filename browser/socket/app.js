@@ -1,20 +1,26 @@
 var socket = io(window.location.origin);
+// const buildWhiteboard = require('./whiteboard')
+import buildWhiteboard from './whiteboard';
 
-socket.on('connect', function () {
-    console.log('I have made a persistent two-way connection to the server!');
-});
+export default function runSocket(canvasElement) {
+    const whiteboard = buildWhiteboard(canvasElement);
 
-whiteboard.on('draw', (start, end, strokeColor) => {
-  socket.emit('draw', start, end, strokeColor);
-});
+    socket.on('connect', function() {
+        console.log('I have made a persistent two-way connection to the server!');
+    });
 
-socket.on('draw', (start, end, strokeColor) => {
-  window.whiteboard.draw(start, end, strokeColor);
-});
+    whiteboard.on('draw', (start, end, strokeColor) => {
+        socket.emit('draw', start, end, strokeColor);
+    });
 
-socket.on('strokes', strokes => {
-  console.log(strokes[0]);
-  strokes.forEach( stroke => {
-    window.whiteboard.draw(stroke.start, stroke.end, stroke.strokeColor);
-  });
-});
+    socket.on('draw', (start, end, strokeColor) => {
+        whiteboard.draw(start, end, strokeColor);
+    });
+
+    socket.on('strokes', strokes => {
+        console.log(strokes[0]);
+        strokes.forEach(stroke => {
+            whiteboard.draw(stroke.start, stroke.end, stroke.strokeColor);
+        });
+    });
+}

@@ -1,15 +1,12 @@
 import React from 'react';  
-import { render } from 'react-dom';  
-import { Router, browserHistory } from 'react-router';  
-import routes from './routes';  
+import { render } from 'react-dom';    
 import { Provider } from 'react-redux';  
 import store from './store';
-
-const store = store();
+import AppContainer from './AppContainer.jsx'
 
 render(  
   <Provider store={store}>
-    <Router routes={routes} history={browserHistory} />
+      <AppContainer />
   </Provider>,
  document.getElementById('main')
 );

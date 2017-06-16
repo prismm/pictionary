@@ -1,22 +1,59 @@
-window.whiteboard = new window.EventEmitter();
+//EVENT EMITTER CONSTRUCTOR 
+// Here is our constructor function, available globally (set to the window object!)
+const EventEmitter = function() {
+    this.subscribers = {};
+};
 
-(function() {
+(function(EE) {
 
-    // Ultimately, the color of our stroke;
+    // To be used like:
+    // instanceOfEE.on('touchdown', cheerFn);
+    EE.prototype.on = function(eventName, eventListener) {
+
+        // If this instance's subscribers object does not yet
+        // have the key matching the given event name, create the
+        // key and assign the value of an empty array.
+        if (!this.subscribers[eventName]) {
+            this.subscribers[eventName] = [];
+        }
+
+        // Push the given listener function into the array
+        // located on the instance's subscribers object.
+        this.subscribers[eventName].push(eventListener);
+
+    };
+
+    // To be used like:
+    // instanceOfEE.emit('codec', 'Hey Snake, Otacon is calling!');
+    EE.prototype.emit = function(eventName) {
+
+        // If there are no subscribers to this event name, why even?
+        if (!this.subscribers[eventName]) {
+            return;
+        }
+
+        // Grab the remaining arguments to our emit function.
+        var remainingArgs = [].slice.call(arguments, 1);
+
+        // For each subscriber, call it with our arguments.
+        this.subscribers[eventName].forEach(function(listener) {
+            listener.apply(null, remainingArgs);
+        });
+
+    };
+
+})(EventEmitter);
+
+/*-------------------------------CREATING WHITEBOARD-----------------------------------------*/
+
+export default function buildWhiteboard(canvas) {
+    const whiteboard = new EventEmitter();
+
     var color;
-
-    // The color selection elements on the DOM.
     var colorElements = [].slice.call(document.querySelectorAll('.marker'));
 
     colorElements.forEach(function(el) {
-
-        // Set the background color of this element
-        // to its id (purple, red, blue, etc).
         el.style.backgroundColor = el.id;
-
-        // Attach a click handler that will set our color variable to
-        // the elements id, remove the selected class from all colors,
-        // and then add the selected class to the clicked color.
         el.addEventListener('click', function() {
             color = this.id;
             document.querySelector('.selected').classList.remove('selected');
@@ -25,38 +62,21 @@ window.whiteboard = new window.EventEmitter();
 
     });
 
-    //Trying to replace getElementById with react component
-    var canvas = document.getElementById('paint');
-    // var canvas = require('../components/Whiteboard')
+    // var canvas = document.getElementById('paint');
     var ctx = canvas.getContext('2d')
 
     function resize() {
-        // Unscale the canvas (if it was previously scaled)
         ctx.setTransform(1, 0, 0, 1, 0, 0);
-
-        // The device pixel ratio is the multiplier between CSS pixels
-        // and device pixels
         var pixelRatio = window.devicePixelRatio || 1;
-
-        // Allocate backing store large enough to give us a 1:1 device pixel
-        // to canvas pixel ratio.
         var w = canvas.clientWidth * pixelRatio,
             h = canvas.clientHeight * pixelRatio;
         if (w !== canvas.width || h !== canvas.height) {
-            // Resizing the canvas destroys the current content.
-            // So, save it...
             var imgData = ctx.getImageData(0, 0, canvas.width, canvas.height)
-
             canvas.width = w;
             canvas.height = h;
-
-            // ...then restore it.
             ctx.putImageData(imgData, 0, 0)
         }
 
-        // Scale the canvas' internal coordinate system by the device pixel
-        // ratio to ensure that 1 canvas unit = 1 css pixel, even though our
-        // backing store is larger.
         ctx.scale(pixelRatio, pixelRatio);
 
         ctx.lineWidth = 5
@@ -64,8 +84,9 @@ window.whiteboard = new window.EventEmitter();
         ctx.lineCap = 'round';
     }
 
-    resize()
-    window.addEventListener('resize', resize)
+    resize();
+
+    window.addEventListener('resize', resize);
 
     var currentMousePosition = {
         x: 0,
@@ -78,8 +99,6 @@ window.whiteboard = new window.EventEmitter();
     };
 
     var drawing = false;
-    return ("hello?");
-
 
     canvas.addEventListener('mousedown', function(e) {
         drawing = true;
@@ -123,5 +142,5 @@ window.whiteboard = new window.EventEmitter();
         }
 
     };
-
-})();
+    return whiteboard;
+}

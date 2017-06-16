@@ -10,8 +10,8 @@ const Stroke = require('./models').Stroke;
 // http://expressjs.com/en/4x/api.html#app.listen
 db.sync({ force: true })
     .then(() => {
-        const server = app.listen(1337, () => {
-            console.log('The server is listening on port 1337!');
+        const server = app.listen(3000, () => {
+            console.log('The server is listening on port 3000!');
         });
 
         const io = socketio(server);
@@ -65,3 +65,11 @@ app.use(session({
 app.get('/', function(req, res) {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
+
+app.get('/api/clear', function(req, res, next) {
+    Stroke.destroy({ where: {} })
+        .then(() => {
+            console.log("nice! cleared all strokes")
+        })
+        .catch(console.error)
+})
