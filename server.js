@@ -14,31 +14,25 @@ db.sync({ force: true })
             console.log('The server is listening on port 3000!');
         });
 
-        //initializing playerList as an empty array
-        let playerList = [];
+        let player = {};
         let playerNumber = 1;
-        let player = {}
+        let playerlist = [];
         const io = socketio(server);
 
         io.on('connection', socket => {
-            //adding new client to playerList
-            console.log('A new client has connected');
-            player = {
-                name: "Player" + playerNumber,
-                id: socket.id,
-                yourTurn: false
-            };
-            playerList.push(player);
-            playerNumber++;
-            console.log("PLAYER LIST:", playerList);
-            console.log("PLAYER:", player);
-            //broadcasting playerList
-            socket.on('appContainerMounted', () => {
-                    socket.emit('players', playerList, player);
-                })
-                // socket.on('connection', () => {
-
-            // })
+            //adding new player
+            socket.on('joinRoom', () => {
+                player = {
+                    name: "Player" + playerNumber,
+                    id: socket.id,
+                    yourTurn: false
+                };
+                playerlist.push(player);
+                playerNumber++;
+                socket.emit('addPlayer', playerlist, player);
+                console.log("NEW PLAYER: ", player);
+                console.log("PLAYERLIST ON SERVER", playerlist)
+            })
 
             //emitting all strokes from database
             Stroke.findAll()
@@ -47,21 +41,19 @@ db.sync({ force: true })
                 });
 
             //on disconnect, filtering playerList to remove the disconnected player 
-            //and broadcasting updated playerList
+            //and emitting leaving player
             socket.on('disconnect', () => {
-                console.log('disconnected ', socket.id);
                 let leavingPlayer = {};
-                playerList = playerList.filter(player => {
+                playerlist = playerlist.filter(player => {
                     if (player.id === socket.id) {
                         leavingPlayer = player;
+                        console.log('LEAVING PLAYER: ', leavingPlayer);
                         return false
                     } else {
                         return true
                     }
                 })
-                console.log("PLAYER LIST UPON DISCONNECT:", playerList);
-                console.log("PLAYER WHO LEFT", leavingPlayer)
-                socket.emit('players', playerList, player);
+                socket.emit('removePlayer', playerlist, player);
             });
 
             //creates stroke on draw and broadcasts to other players

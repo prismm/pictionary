@@ -3,39 +3,57 @@ import Header from './components/Header.jsx'
 import Room from './components/Room.jsx'
 import { buildPlayerList } from './socket/app'
 const socket = io(window.location.origin);
+import { addPlayer, removePlayer, playerList } from './stateActions'
+import { connect } from 'react-redux';
 
-export default class AppContainer extends React.Component {
+class AppContainer extends React.Component {
     constructor(props){
         super(props)
         this.state = {
-            playerList: []
+            inRoom: false,
+            playerlist: []
         }
-        console.log("PLAYER LIST PRINTING FROM APP CONTAINER", this.state.playerList)
+        this.joinRoom = this.joinRoom.bind(this);
     }
 
     componentDidMount(){
-        socket.emit('appContainerMounted', true)
-        socket.on('players', playerList => {
-            console.log("RECEIVING PLAYER LIST", playerList);
-            this.setState({playerList})
+        socket.on('addPlayer', (playerlist, player) => {
+            this.setState({playerlist: playerlist});
+            console.log("PLAYERLIST ON STATE", this.state.playerlist)
+            this.props.dispatchPlayerList(playerlist);
         })
     }
 
-    // (){
-    //     socket.emit('appContainerMounted', true)
-    //     socket.on('players', playerList => {
-    //         console.log("RECEIVING PLAYER LIST", playerList);
-    //         this.setState({playerList})
-    //     })
-    // }
+    joinRoom(){
+        socket.emit('joinRoom', true)
+        this.setState({inRoom: true})
+
+
+        // socket.on('removePlayer', (playerlist, player) => {
+        //     this.props.dispatchRemovePlayer(player);
+        // })
+    }
     
     render(){
         return (
             <div className="AppContainer">
                 <Header />
-                <Room yourTurn={false} playerList={this.state.playerList} />
+                {this.state.inRoom ? 
+                    <Room players={this.state.playerlist} yourTurn={false} /> 
+                    : 
+                    <button className="pure-button" onClick={this.joinRoom}>JOIN GAME</button>
+                }
             </div>
         )
     }
 }
 
+const mapStateToProps = ({ players }) => ({ players })
+const mapDispatchToProps = dispatch => ({ 
+    dispatchAddPlayer: (player) => dispatch(addPlayer(player)),
+    dispatchRemovePlayer: (player) => dispatch(removePlayer(player)),
+    dispatchPlayerList: (listOfPlayers) => dispatch(playerList(listOfPlayers))
+ })
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(AppContainer)

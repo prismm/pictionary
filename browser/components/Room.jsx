@@ -24,15 +24,11 @@ export default class Room extends Component {
         this.nextTurn = this.nextTurn.bind(this);
     }
 
-    componentDidMount(){
-        //get players from socket -- set event listener
-        //put players on local state
-
-    }
-
-    componentWillReceiveProps(nextProps){
-        this.setState({players: nextProps.playerList})
-    }
+ 
+    // componentWillReceiveProps(nextProps){
+    //     // socket.emit('appContainerMounted', true)
+       
+    // }
 
     tick(){
         this.setState({timeRemaining: this.state.timeRemaining - 1});
@@ -69,7 +65,7 @@ export default class Room extends Component {
                     ) 
                     : (<YourGuess />)
                 }
-                <Players />
+                <Players players={this.props.players}/>
                 <Timer timeRemaining={this.state.timeRemaining} />
                 <Guesses />
             </div>

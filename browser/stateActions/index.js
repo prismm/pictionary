@@ -20,6 +20,11 @@ export const removePlayer = (player) => ({
     player
 })
 
+export const playerList = (listOfPlayers) => ({
+    type: 'UPDATE_PLAYERLIST',
+    listOfPlayers
+})
+
 export const assignName = (player, name) => ({
     type: 'ASSIGN_USERNAME',
     player,
@@ -32,7 +37,7 @@ export const assignName = (player, name) => ({
 export default function rootReducer(state = initialState, action) {
 
     const newState = Object.assign({}, state);
-
+    console.log("ACTION IN REDUCER", action)
     switch (action.type) {
         case 'ASSIGN_USERNAME':
             // newState = newState.players.map(player => {
@@ -60,13 +65,9 @@ export default function rootReducer(state = initialState, action) {
         case 'ADD_PLAYER':
             newState.players = newState.players.concat([action.player]);
         case 'REMOVE_PLAYER':
-            newState.players = newState.players.filter(player => {
-                if (player.id === action.player.id) {
-                    return false;
-                } else {
-                    return true;
-                }
-            })
+            newState.players = newState.players.filter(player => player.id === action.player.id)
+        case 'UPDATE_PLAYERLIST':
+            newState.players = action.listOfPlayers;
         default:
             break;
     }
