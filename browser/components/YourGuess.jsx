@@ -12,10 +12,12 @@ export default class YourGuess extends React.Component {
 
     render(){
         return (
-            <form>
-                <p>Submit your guesses here</p>
-                <input type="text" onMouseEnter={this.submitGuess} />
-            </form>
+            <div className="your-guess">
+                <form>
+                    <span>Submit your guesses here: </span>
+                    <input type="text" onMouseEnter={this.submitGuess} />
+                </form>
+            </div>
         )
     }
 }

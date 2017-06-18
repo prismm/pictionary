@@ -9,27 +9,60 @@ import YourGuess from './YourGuess';
 import Guesses from './Guesses';
 import Timer from './Timer';
 import Players from './Players';
+import { addPlayer, removePlayer, playerList } from '../stateActions'
+const socket = io(window.location.origin);
 
-
-export default class Room extends Component {
+class Room extends Component {
     constructor(props){
         super(props);
         this.state = {
-            // players: [],
+            players: [],
             yourTurn: props.yourTurn,
-            timeRemaining: 60
+            timeRemaining: 60,
         }
         this.startTurn = this.startTurn.bind(this);
         this.tick = this.tick.bind(this);
         this.nextTurn = this.nextTurn.bind(this);
+        this.updatePlayersFromSockets = this.updatePlayersFromSockets.bind(this);
+        
+        socket.on('addPlayer', (playerlist, player) => {  
+            console.log("HOW MANY TIMES IS THIS HAPPENING?") 
+            this.updatePlayersFromSockets(playerlist);
+        })
+
+        // socket.on('receiveGuess', (guess) => {   
+        //     this.updateGuessFromSockets(guess)
+        // }
+        
     }
 
- 
-    // componentWillReceiveProps(nextProps){
-    //     // socket.emit('appContainerMounted', true)
-       
+    componentDidMount(){
+        socket.emit('joinRoom', true)
+        socket.on('addPlayer', (playerlist, player) => {
+            console.log("HOW MANY TIMES IS this HAPPENING?") 
+            this.props.dispatchPlayerList(playerlist);
+            this.setState({players: playerlist})
+            this.updatePlayersFromSockets(playerlist);
+        })
+    }
+
+    updatePlayersFromSockets(playerlist){
+        console.log("IS THIS EVERY HAPPENING AT ALL??????")
+        this.setState({players: playerlist})
+    }
+
+    // updateGuessFromSockets(guess){
+        //
     // }
 
+    // componentWillReceiveProps(nextProps) {  
+    //     socket.emit('joinRoom', true)
+    // }
+
+    // componentWillUnmount() {  
+    //     socket.emit('leaveRoom', true);
+    //     this.props.dispatchRemovePlayer()
+    // }
     tick(){
         this.setState({timeRemaining: this.state.timeRemaining - 1});
         if (this.state.timeRemaining < 0) {
@@ -52,6 +85,7 @@ export default class Room extends Component {
     }
 
     render(){
+        console.log("PROPS ON ROOM", this.props)
         return (
             <div className="Room">
                 <Whiteboard />
@@ -63,23 +97,26 @@ export default class Room extends Component {
                             <button className="pure-button" onClick={this.startTurn}>START</button>
                         </div>
                     ) 
-                    : (<YourGuess />)
+                    : <div className="clear-both"></div>
                 }
                 <Players players={this.props.players}/>
-                <Timer timeRemaining={this.state.timeRemaining} />
                 <Guesses />
+                
+                <Timer timeRemaining={this.state.timeRemaining} />
+                <YourGuess />
             </div>
         )
     }
 }
 
 
-// function mapStateToProps(state){
-//     return state;
-// }
 
-// function mapDispatchToProps(dispatch){
-//     return actions;
-// }
+const mapStateToProps = ({ players }) => ({ players })
+const mapDispatchToProps = dispatch => ({ 
+    dispatchAddPlayer: (player) => dispatch(addPlayer(player)),
+    dispatchRemovePlayer: (player) => dispatch(removePlayer(player)),
+    dispatchPlayerList: (listOfPlayers) => dispatch(playerList(listOfPlayers))
+ })
 
-// export default connect(mapStateToProps, mapDispatchToProps)(Room);
+
+export default connect(mapStateToProps, mapDispatchToProps)(Room)

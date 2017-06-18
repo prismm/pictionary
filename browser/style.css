@@ -51,6 +51,25 @@ body {
     font-style: bold;
 }
 
+.your-guess {
+    border: 3px solid black;
+    padding: 10px;
+    float: left;
+    font-style: bold;
+    margin: 0 10px;
+}
+
+.guesses {
+    border: 3px solid black;
+    padding: 8px 20px;
+    float: left;
+    font-style: bold;
+    margin: 0 10px;
+    clear: right;
+    width: 400px;
+    height: 308px;
+}
+
 
 /*button {
     height: 6px;
@@ -61,11 +80,12 @@ body {
 }*/
 
 .player-list {
-    margin: 0 20px;
+    margin: 0 10px 10px 10px;
     float: left;
     line-height: 20px;
     border: 3px solid black;
     padding: 8px 20px;
+    width: 400px;
 }
 
 .pure-button {

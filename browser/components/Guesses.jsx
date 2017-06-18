@@ -11,7 +11,7 @@ export default class Guesses extends React.Component {
         return (
             //socket.io stuff?
             <div className="guesses">
-                <p>Guesses will display here</p>
+                <h3>GUESSES</h3>
             </div>
         )
     }
