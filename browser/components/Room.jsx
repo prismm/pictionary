@@ -25,7 +25,7 @@ class Room extends Component {
         this.nextTurn = this.nextTurn.bind(this);
         this.updatePlayersFromSockets = this.updatePlayersFromSockets.bind(this);
         
-        socket.on('addPlayer', (playerlist, player) => {  
+        socket.on('addPlayer', (playerlist) => {  
             console.log("HOW MANY TIMES IS THIS HAPPENING?") 
             this.updatePlayersFromSockets(playerlist);
         })
@@ -38,7 +38,7 @@ class Room extends Component {
 
     componentDidMount(){
         socket.emit('joinRoom', true)
-        socket.on('addPlayer', (playerlist, player) => {
+        socket.on('addPlayer', (playerlist) => {
             console.log("HOW MANY TIMES IS this HAPPENING?") 
             this.props.dispatchPlayerList(playerlist);
             this.setState({players: playerlist})
@@ -49,6 +49,7 @@ class Room extends Component {
     updatePlayersFromSockets(playerlist){
         console.log("IS THIS EVERY HAPPENING AT ALL??????")
         this.setState({players: playerlist})
+        console.log(this.state.players)
     }
 
     // updateGuessFromSockets(guess){

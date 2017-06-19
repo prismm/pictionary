@@ -29,7 +29,7 @@ export function buildPlayerList() {
         console.log('I have made a persistent two-way connection to the server!');
     });
 
-    socket.on('players', playerList => {
+    socket.on('addPlayer', playerList => {
         console.log(playerList);
         return playerList
     })

@@ -29,7 +29,7 @@ db.sync({ force: true })
                 };
                 playerlist.push(player);
                 playerNumber++;
-                socket.emit('addPlayer', playerlist, player);
+                socket.emit('addPlayer', playerlist);
                 console.log("NEW PLAYER: ", player);
                 console.log("PLAYERLIST ON SERVER", playerlist)
             })
